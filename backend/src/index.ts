@@ -1,4 +1,3 @@
+import webScrapper from "./webScrapper/webScrapper";
 
-import {webScrapper} from "./webScrapper/webScrapper";
-
-webScrapper().then();
+webScrapper(500).then((items) => console.log(items.length));
