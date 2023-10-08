@@ -2,20 +2,30 @@
   "name": "sreality-scraper",
   "version": "1.0.0",
   "description": "",
-  "main": ".src/index.ts",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "ts-node src/index.ts",
-    "dev": "nodemon src/index.ts"
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
   },
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "typescript": "^5.2.2",
     "@types/node": "^20.8.2",
-    "typescript": "^5.2.2"
+    "@types/react": "^18.2.25",
+    "@types/react-dom": "^18",
+    "autoprefixer": "^10",
+    "postcss": "^8",
+    "tailwindcss": "^3",
+    "eslint": "^8",
+    "eslint-config-next": "13.5.4"
   },
   "dependencies": {
     "@types/puppeteer": "^7.0.4",
-    "puppeteer": "^21.3.7"
+    "next": "^13.5.4",
+    "puppeteer": "^21.3.7",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
   }
 }

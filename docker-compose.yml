@@ -13,3 +13,15 @@ services:
       - '5432:5432'
     volumes:
       - .docker/postgres-data:/var/lib/postgresql/data
+#  app:
+#    build:
+#      context: .
+#      dockerfile: .docker/Dockerfile
+#    container_name: luxonis_test_app
+#    restart: always
+#    ports:
+#      - '8080:8080'
+#    volumes:
+#      - .:/app
+#    depends_on:
+#      - db
