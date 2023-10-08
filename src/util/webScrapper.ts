@@ -2,7 +2,7 @@ import puppeteer, { Browser, Page } from "puppeteer";
 
 let browser: Browser | null;
 
-export type Item = {
+export type ScrapedItem = {
   title: string;
   address: string;
   price: string;
@@ -15,6 +15,7 @@ const getBrowser = async () => {
       headless: "new",
       defaultViewport: null,
     });
+    console.log("Browser initialized.");
   }
   return browser;
 };
@@ -23,6 +24,7 @@ const closeBrowser = async () => {
   if (browser) {
     await browser.close();
     browser = null;
+    console.log("Browser closed.");
   }
 };
 
@@ -31,6 +33,8 @@ const closeBrowser = async () => {
  * @param page
  */
 const scrapeData = async (page: Page) => {
+  if (!page) throw new Error("Page is null.");
+
   await page.waitForSelector("div.property.ng-scope a img", {
     timeout: 10000,
   });
@@ -40,7 +44,7 @@ const scrapeData = async (page: Page) => {
       document.querySelectorAll("div.property.ng-scope"),
     );
 
-    const sources: Item[] = listItems.map((listItem): Item => {
+    const sources: ScrapedItem[] = listItems.map((listItem): ScrapedItem => {
       const img = listItem.querySelector("a img");
       const title = listItem.querySelector("h2");
       const address = listItem.querySelector(".locality.ng-binding");
@@ -57,19 +61,26 @@ const scrapeData = async (page: Page) => {
   });
 };
 
-const webScrapper = async (
-  quantity: number = 500,
-  baseUrl: string = "https://www.sreality.cz/en/search/for-sale/apartments?page=",
-  pageSize: number = 20,
-) => {
-  console.log("Initializing web scrapper ...");
+/**
+ * Scrapes data from https://sreality.cz. Returns array of scraped items.
+ * @param quantity - number of items to scrape, default 500
+ */
+const webScrapper = async (quantity: number = 500) => {
+  if (quantity < 1) {
+    throw new Error("Invalid quantity parameter.");
+  }
 
+  console.log("Initializing web scrapper...");
+
+  const baseUrl: string =
+    "https://www.sreality.cz/en/search/for-sale/apartments?page=";
   const browser = await getBrowser();
   const page = await browser.newPage();
-  const maxPage = quantity / pageSize;
-  const all: Item[] = [];
+  const maxPage = Math.ceil(quantity / 20);
+  const all: ScrapedItem[] = [];
 
-  console.log("Scraping data from sreality.cz ...");
+  console.log("Scraping data from sreality.cz...");
+
   try {
     for (let currentPage = 1; currentPage <= maxPage; currentPage++) {
       const url = baseUrl + currentPage;
@@ -81,11 +92,15 @@ const webScrapper = async (
     }
     console.log("Successfully scraped " + all.length + " items.");
   } catch (err) {
-    console.log("Could not scrape data from sreality.cz");
+    throw new Error("An error occurred while scraping data.");
   } finally {
     await closeBrowser();
   }
-  return all;
+
+  if (all.length < quantity) {
+    throw new Error("Not enough data scraped (scraped " + all.length + ").");
+  }
+  return all.length > quantity ? all.slice(0, quantity) : all;
 };
 
 export default webScrapper;
