@@ -3,15 +3,19 @@
 import { ApartmentData } from "@/components/ApartmentItem";
 import ApartmentList from "@/components/ApartmentList";
 import { useEffect, useState } from "react";
+import { useSearchParams } from "next/navigation";
 
 function Home() {
   const [loading, setLoading] = useState(false);
   const [apartments, setApartments] = useState<ApartmentData[]>([]);
 
+  const page = useSearchParams().get("page") || 1;
+
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
-      const response = await fetch("/api/apartments", {
+      const url = "/api/apartments?page=" + page;
+      const response = await fetch(url, {
         method: "GET",
       });
       const data: ApartmentData[] = await response.json();

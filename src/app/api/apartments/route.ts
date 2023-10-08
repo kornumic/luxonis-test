@@ -2,26 +2,13 @@ import { NextRequest, NextResponse } from "next/server";
 import { ApartmentData } from "@/components/ApartmentItem";
 import webScrapper from "@/util/webScrapper";
 
-let apartments: ApartmentData[] = [
-  {
-    id: 1,
-    title: "Apartment 1",
-    address: "Address 1",
-    price: "Price 1",
-    src: "https://d18-a.sdn.cz/d_18/c_img_QI_Jh/4ZEBMXA.jpeg?fl=res,400,300,3|shr,,20|jpg,90",
-  },
-  {
-    id: 2,
-    title: "Apartment 2",
-    address: "Address 2",
-    price: "Price 2",
-    src: "https://d18-a.sdn.cz/d_18/c_img_QI_Jh/4ZEBMXA.jpeg?fl=res,400,300,3|shr,,20|jpg,90",
-  },
-];
+let apartments: ApartmentData[] = [];
 
-export const GET = async (req: NextRequest, res: NextResponse) => {
-  if (apartments.length !== 500) {
-    await webScrapper(500).then((items) => {
+export const GET = async (request: NextRequest, res: NextResponse) => {
+  const quantity = 500;
+
+  if (apartments.length !== quantity) {
+    await webScrapper(quantity).then((items) => {
       apartments = items.map((item) => {
         const apartment: ApartmentData = {
           ...item,
@@ -33,13 +20,16 @@ export const GET = async (req: NextRequest, res: NextResponse) => {
   }
 
   try {
-    // const apartments = await ApartmentModel.findAll();
-    // const page = req.query.page || "1";
-    // const perPage = req.query.perPage || "20";
-    // const offset = (+page - 1) * +perPage;
-    // const selectedApartments = apartments.slice(offset, +perPage);
+    const page = +(request.nextUrl.searchParams.get("page") || "1");
+    const perPage = +(request.nextUrl.searchParams.get("perPage") || "20");
+    const offset = (page - 1) * perPage;
+    const selectedApartments = apartments.slice(offset, offset + perPage);
 
-    console.log("Sending apartments...");
-    return NextResponse.json(apartments);
-  } catch (err) {}
+    return NextResponse.json(selectedApartments, { status: 200 });
+  } catch (err) {
+    return NextResponse.json(
+      { error: "Internal Server Error" },
+      { status: 500 },
+    );
+  }
 };
