@@ -4,12 +4,15 @@ import { ApartmentData } from "@/components/ApartmentItem";
 import ApartmentList from "@/components/ApartmentList";
 import { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
+import Header from "@/components/Header";
+import { useRouter } from "next/navigation";
 
 function Home() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [apartments, setApartments] = useState<ApartmentData[]>([]);
-  const page = useSearchParams().get("page") || 1;
+  const page = +(useSearchParams().get("page") || "1");
+  const router = useRouter();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -33,11 +36,29 @@ function Home() {
     fetchData();
   }, [page]);
 
+  const pageButtonHandler = (move: number) => {
+    const newPage = page + move;
+    if (newPage > 0) {
+      router.push("/?page=" + newPage);
+    }
+  };
+
+  const pages = {
+    prev: page > 1,
+    next: page < 500 / 20,
+  };
+
   return (
     <div>
-      <h1>Home</h1>
+      <Header />
       {loading && <p>Loading...</p>}
-      {!loading && <ApartmentList apartments={apartments} />}
+      {!loading && (
+        <ApartmentList
+          apartments={apartments}
+          pageButtonHandler={pageButtonHandler}
+          pages={pages}
+        />
+      )}
     </div>
   );
 }

@@ -45,7 +45,7 @@ const scrapeData = async (page: Page) => {
     );
 
     const sources: ScrapedItem[] = listItems.map((listItem): ScrapedItem => {
-      const img = listItem.querySelector("a img");
+      const src = listItem.querySelector("a img");
       const title = listItem.querySelector("h2");
       const address = listItem.querySelector(".locality.ng-binding");
       const price = listItem.querySelector(".norm-price.ng-binding");
@@ -54,7 +54,7 @@ const scrapeData = async (page: Page) => {
         title: title?.innerText.toString() || "",
         address: address?.textContent?.toString() || "",
         price: price?.textContent?.toString() || "",
-        src: img?.getAttribute("src")?.toString() || "",
+        src: src?.getAttribute("src")?.toString() || "",
       };
     });
     return sources;
