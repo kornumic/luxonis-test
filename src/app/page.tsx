@@ -7,24 +7,31 @@ import { useSearchParams } from "next/navigation";
 
 function Home() {
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const [apartments, setApartments] = useState<ApartmentData[]>([]);
-
   const page = useSearchParams().get("page") || 1;
 
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
-      const url = "/api/apartments?page=" + page;
-      const response = await fetch(url, {
-        method: "GET",
-      });
-      const data: ApartmentData[] = await response.json();
-      setApartments(data);
-      setLoading(false);
+      setError(null);
+      try {
+        const url = "/api/apartments?page=" + page;
+        const response = await fetch(url, {
+          method: "GET",
+        });
+        const data: ApartmentData[] = await response.json();
+        setApartments(data);
+      } catch (error) {
+        console.log(error);
+        setError("Unexpected error");
+      } finally {
+        setLoading(false);
+      }
     };
 
     fetchData();
-  }, []);
+  }, [page]);
 
   return (
     <div>
