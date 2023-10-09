@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import Header from "@/components/Header";
 import { useRouter } from "next/navigation";
+import Loading from "@/components/Loading";
 
 function Home() {
   const [loading, setLoading] = useState(false);
@@ -51,14 +52,16 @@ function Home() {
   return (
     <div>
       <Header />
-      {loading && <p>Loading...</p>}
-      {!loading && (
-        <ApartmentList
-          apartments={apartments}
-          pageButtonHandler={pageButtonHandler}
-          pages={pages}
-        />
-      )}
+      <Loading />
+
+      {/*{loading && <Loading />}*/}
+      {/*{!loading && (*/}
+      {/*  <ApartmentList*/}
+      {/*    apartments={apartments}*/}
+      {/*    pageButtonHandler={pageButtonHandler}*/}
+      {/*    pages={pages}*/}
+      {/*  />*/}
+      {/*)}*/}
     </div>
   );
 }
