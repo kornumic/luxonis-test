@@ -7,8 +7,10 @@ import { useSearchParams } from "next/navigation";
 import Header from "@/components/Header";
 import { useRouter } from "next/navigation";
 import Loading from "@/components/Loading";
+import { InitStatus } from "@/app/api/init-status/route";
 
 function Home() {
+  const [initializing, setInitializing] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [apartments, setApartments] = useState<ApartmentData[]>([]);
@@ -20,6 +22,13 @@ function Home() {
       setLoading(true);
       setError(null);
       try {
+        const initializationStatus = await fetch("/api/init-status", {
+          method: "GET",
+        });
+        const init: InitStatus = await initializationStatus.json();
+        console.log(init);
+        setInitializing(init === "initializing");
+
         const url = "/api/apartments?page=" + page;
         const response = await fetch(url, {
           method: "GET",
@@ -31,6 +40,7 @@ function Home() {
         setError("Unexpected error");
       } finally {
         setLoading(false);
+        setInitializing(false);
       }
     };
 
@@ -52,16 +62,18 @@ function Home() {
   return (
     <div>
       <Header />
-      <Loading />
-
-      {/*{loading && <Loading />}*/}
-      {/*{!loading && (*/}
-      {/*  <ApartmentList*/}
-      {/*    apartments={apartments}*/}
-      {/*    pageButtonHandler={pageButtonHandler}*/}
-      {/*    pages={pages}*/}
-      {/*  />*/}
-      {/*)}*/}
+      {loading && !initializing && !error && <Loading text={"Loading..."} />}
+      {loading && initializing && !error && (
+        <Loading text={"Initializing..."} />
+      )}
+      {error && <p>{error}</p>}
+      {!loading && apartments.length > 0 && (
+        <ApartmentList
+          apartments={apartments}
+          pageButtonHandler={pageButtonHandler}
+          pages={pages}
+        />
+      )}
     </div>
   );
 }

@@ -1,21 +1,21 @@
 import { NextRequest, NextResponse } from "next/server";
 import { ApartmentData } from "@/components/ApartmentItem";
-import webScrapper from "@/util/webScrapper";
+import webScrapper from "@/lib/web-scrapper";
+import { getInitStatus } from "@/lib/db/schema";
 
-let apartments: ApartmentData[] = [];
+export let apartments: ApartmentData[] = [];
 
 export const GET = async (request: NextRequest, res: NextResponse) => {
   const quantity = 500;
-
-  if (apartments.length !== quantity) {
-    await webScrapper(quantity).then((items) => {
-      apartments = items.map((item) => {
-        const apartment: ApartmentData = {
-          ...item,
-          id: +Math.random().toString(),
-        };
-        return apartment;
-      });
+  const initializationStatus = await getInitStatus();
+  if (initializationStatus === "initializing") {
+    const items = await webScrapper(quantity);
+    apartments = items.map((item) => {
+      const apartment: ApartmentData = {
+        ...item,
+        id: +Math.random().toString(),
+      };
+      return apartment;
     });
   }
 

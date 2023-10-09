@@ -8,7 +8,7 @@ const ApartmentList: React.FC<{
   pages: PageList;
 }> = ({ apartments, pageButtonHandler, pages }) => {
   return (
-    <div className="mx-72">
+    <div className=" md:mx-32 lg:mx-72">
       <PagesChanger
         pages={pages}
         prevButtonHandler={pageButtonHandler.bind(null, -1)}
