@@ -11,7 +11,11 @@ const client = new Client({
   database: "luxonis",
 });
 
-await client.connect();
-console.log("connected to db");
+try {
+  await client.connect();
+  console.log("connected to db");
+} catch (e) {
+  console.log(e);
+}
 export const db = drizzle(client);
-await migrate(db, { migrationsFolder: "drizzle" });
+await migrate(db, { migrationsFolder: ".drizzle" });

@@ -1,14 +1,7 @@
 import Image from "next/image";
+import { ApartmentSelectModel } from "@/lib/db/schema";
 
-export type ApartmentData = {
-  id: number;
-  title: string;
-  address: string;
-  price: string;
-  src: string;
-};
-
-const ApartmentItem: React.FC<{ apartment: ApartmentData }> = ({
+const ApartmentItem: React.FC<{ apartment: ApartmentSelectModel }> = ({
   apartment,
 }) => {
   return (

@@ -1,13 +1,7 @@
 import puppeteer, { Browser, Page } from "puppeteer";
+import { ApartmentInsertModel } from "@/lib/db/schema";
 
 let browser: Browser | null;
-
-export type ScrapedItem = {
-  title: string;
-  address: string;
-  price: string;
-  src: string;
-};
 
 const getBrowser = async () => {
   if (!browser) {
@@ -32,7 +26,7 @@ const closeBrowser = async () => {
  * Scrapes data from loaded page. Waits for selector to appear.
  * @param page
  */
-const scrapeData = async (page: Page) => {
+const scrapeData = async (page: Page): Promise<ApartmentInsertModel[]> => {
   if (!page) throw new Error("Page is null.");
 
   await page.waitForSelector("div.property.ng-scope a img", {
@@ -44,19 +38,21 @@ const scrapeData = async (page: Page) => {
       document.querySelectorAll("div.property.ng-scope"),
     );
 
-    const sources: ScrapedItem[] = listItems.map((listItem): ScrapedItem => {
-      const src = listItem.querySelector("a img");
-      const title = listItem.querySelector("h2");
-      const address = listItem.querySelector(".locality.ng-binding");
-      const price = listItem.querySelector(".norm-price.ng-binding");
+    const sources: ApartmentInsertModel[] = listItems.map(
+      (listItem): ApartmentInsertModel => {
+        const src = listItem.querySelector("a img");
+        const title = listItem.querySelector("h2");
+        const address = listItem.querySelector(".locality.ng-binding");
+        const price = listItem.querySelector(".norm-price.ng-binding");
 
-      return {
-        title: title?.innerText.toString() || "",
-        address: address?.textContent?.toString() || "",
-        price: price?.textContent?.toString() || "",
-        src: src?.getAttribute("src")?.toString() || "",
-      };
-    });
+        return {
+          title: title?.innerText.toString(),
+          address: address?.textContent?.toString(),
+          price: price?.textContent?.toString(),
+          src: src?.getAttribute("src")?.toString(),
+        };
+      },
+    );
     return sources;
   });
 };
@@ -65,7 +61,9 @@ const scrapeData = async (page: Page) => {
  * Scrapes data from https://sreality.cz. Returns array of scraped items.
  * @param quantity - number of items to scrape, default 500
  */
-const webScrapper = async (quantity: number = 500) => {
+const webScrapper = async (
+  quantity: number = 500,
+): Promise<ApartmentInsertModel[]> => {
   if (quantity < 1) {
     throw new Error("Invalid quantity parameter.");
   }
@@ -77,7 +75,7 @@ const webScrapper = async (quantity: number = 500) => {
   const browser = await getBrowser();
   const page = await browser.newPage();
   const maxPage = Math.ceil(quantity / 20);
-  const all: ScrapedItem[] = [];
+  const all: ApartmentInsertModel[] = [];
 
   console.log("Scraping data from sreality.cz...");
 
@@ -104,3 +102,27 @@ const webScrapper = async (quantity: number = 500) => {
 };
 
 export default webScrapper;
+
+// export async function fetch() : Promise<any>{
+//     log("fetch", "Starting scraping data...");
+//     try{
+//         const baseApi = "https://www.sreality.cz/api/en/v2/estates"
+//         const headers = {
+//             "Content-Type": "application/hal+json",
+//             "User-Agent": "PostmanRuntime/7.32.3",
+//         };
+//         const response = await axios.get(baseApi, {
+//             headers,
+//             params: {
+//                 category_main_cb: 1,
+//                 category_type_cb: 1,
+//                 per_page: 500
+//             },
+//             timeout: 5000
+//         })
+//         return response.data;
+//     }catch(error){
+//         log("fetch", Error fetching data: ${error});
+//         return {};
+//     }
+// }

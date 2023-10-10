@@ -1,9 +1,10 @@
 import React from "react";
-import ApartmentItem, { ApartmentData } from "@/components/ApartmentItem";
+import ApartmentItem from "@/components/ApartmentItem";
 import PagesChanger, { PageList } from "@/components/PagesChanger";
+import { ApartmentSelectModel } from "@/lib/db/schema";
 
 const ApartmentList: React.FC<{
-  apartments: ApartmentData[];
+  apartments: ApartmentSelectModel[];
   pageButtonHandler: (move: number) => void;
   pages: PageList;
 }> = ({ apartments, pageButtonHandler, pages }) => {

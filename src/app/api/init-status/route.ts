@@ -1,8 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 import { apartments } from "@/app/api/apartments/route";
-import { getInitStatus } from "@/lib/db/schema";
 
 export type InitStatus = "uninitialized" | "initializing" | "ready";
+
+export const getInitStatus = async () => {
+  return apartments.length !== 500 ? "initializing" : "ready";
+};
 
 export const GET = async (request: NextRequest, res: NextResponse) => {
   const initializationStatus = await getInitStatus();

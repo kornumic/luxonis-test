@@ -1,6 +1,6 @@
 "use client";
 
-import { ApartmentData } from "@/components/ApartmentItem";
+import { ApartmentSelectModel } from "@/lib/db/schema";
 import ApartmentList from "@/components/ApartmentList";
 import { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
@@ -13,7 +13,7 @@ function Home() {
   const [initializing, setInitializing] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [apartments, setApartments] = useState<ApartmentData[]>([]);
+  const [apartments, setApartments] = useState<ApartmentSelectModel[]>([]);
   const page = +(useSearchParams().get("page") || "1");
   const router = useRouter();
 
@@ -33,7 +33,7 @@ function Home() {
         const response = await fetch(url, {
           method: "GET",
         });
-        const data: ApartmentData[] = await response.json();
+        const data: ApartmentSelectModel[] = await response.json();
         setApartments(data);
       } catch (error) {
         console.log(error);
