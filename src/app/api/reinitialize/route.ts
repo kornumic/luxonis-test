@@ -7,3 +7,5 @@ export const POST = async (request: NextRequest, res: NextResponse) => {
 
   return NextResponse.json({ status: 204 });
 };
+
+export const dynamic = 'force-dynamic';

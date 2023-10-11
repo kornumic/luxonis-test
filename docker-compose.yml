@@ -14,16 +14,16 @@ services:
     volumes:
       - .docker/postgres-data:/var/lib/postgresql/data
   web:
+    container_name: web
     build:
       context: ./
       dockerfile: Dockerfile
     volumes:
-      - .:/app
-    command: npm run dev
+      - .:/app # ???
     depends_on:
       - db
     ports:
-      - "8080:8080"
+      - '8080:3000'
     environment:
-      NODE_ENV: development
+      NODE_ENV: production
       DATABASE_URL: postgresql://postgres:postgres@db:5432/luxonis

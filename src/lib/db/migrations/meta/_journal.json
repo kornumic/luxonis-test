@@ -1,0 +1,13 @@
+{
+  "version": "5",
+  "dialect": "pg",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "5",
+      "when": 1697048819356,
+      "tag": "0000_fixed_typhoid_mary",
+      "breakpoints": true
+    }
+  ]
+}

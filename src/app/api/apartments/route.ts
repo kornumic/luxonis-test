@@ -18,3 +18,5 @@ export const GET = async (request: NextRequest, res: NextResponse) => {
     );
   }
 };
+
+export const dynamic = 'force-dynamic';
