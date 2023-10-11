@@ -1,9 +1,3 @@
-FROM node:20 AS deps
-WORKDIR /app
-
-COPY package.json package-lock.json ./
-RUN  npm install
-
 FROM node:20 AS puppeteer
 
 # Install latest chrome dev package and fonts to support major charsets (Chinese, Japanese, Arabic, Hebrew, Thai and a few others)
@@ -31,35 +25,11 @@ RUN npm i ./puppeteer-browsers-latest.tgz ./puppeteer-core-latest.tgz ./puppetee
 
 CMD ["google-chrome-stable"]
 
-FROM node:20 AS builder
+FROM node:20
+
 WORKDIR /app
-COPY --from=deps /app/node_modules ./node_modules
+
 COPY . .
-
-ENV NEXT_TELEMETRY_DISABLED 1
-
+RUN npm install
 RUN npm run build
-
-FROM node:20 AS runner
-WORKDIR /app
-
-ENV NODE_ENV production
-ENV NEXT_TELEMETRY_DISABLED 1
-
-RUN apt-get install -yq libc6 libcairo2 libexpat1 libfontconfig1 libgcc1 libglib2.0-0 libpango-1.0-0 libpangocairo-1.0-0 libstdc++6 libx11-6 libxcb1 libxext6 libxrender1 ca-certificates wget
-RUN addgroup --system --gid 1001 nodejs
-RUN adduser --system --uid 1001 nextjs
-
-COPY --from=builder --chown=nextjs:nodejs /app/.next ./.next
-COPY --from=builder /app/node_modules ./node_modules
-COPY --from=builder /app/package.json ./package.json
-
-USER nextjs
-
-EXPOSE 8080
-
-ENV PORT 8080
-
-CMD ["npm", "run", "generate"]
-
 CMD ["npm", "start"]
