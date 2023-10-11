@@ -13,14 +13,15 @@ services:
       - '5432:5432'
     volumes:
       - .docker/postgres-data:/var/lib/postgresql/data
-#  web:
-#    build:
-#      context: ./
-#      target: runner
-#    volumes:
-#      - .:/app
-#    command: npm run dev
-#    ports:
-#      - "8080:8080"
-#    environment:
-#      NODE_ENV: development
+  web:
+    build:
+      context: ./
+      target: runner
+    volumes:
+      - .:/app
+    command: npm run dev
+    ports:
+      - "8080:8080"
+    environment:
+      NODE_ENV: development
+        - DB_URL="postgresql://postgres:postgres@localhost:5432/luxonis"
