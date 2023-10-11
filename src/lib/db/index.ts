@@ -5,7 +5,7 @@ import { ApartmentInsertModel, apartmentsTable } from "@/lib/db/schema";
 import webScrapper from "@/lib/web-scrapper";
 import { sql } from "drizzle-orm";
 
-const client = new Client(process.env.DB_URL!);
+const client = new Client(process.env.DATABASE_URL!);
 
 try {
   await client.connect();
