@@ -63,7 +63,7 @@ export const initialize = async () => {
         "Database has been initialized from scraped data, total: " + success,
       );
     } catch (err) {
-      console.log("Error inserting apartment:" + err);
+      throw new Error("Internal Server Error");
     } finally {
       initializationInProgress = false;
     }

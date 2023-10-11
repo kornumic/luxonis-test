@@ -11,9 +11,9 @@ export const GET = async (request: NextRequest, res: NextResponse) => {
     const selectedApartments = await getApartments(offset, perPage);
 
     return NextResponse.json(selectedApartments, { status: 200 });
-  } catch (err) {
+  } catch (err: any) {
     return NextResponse.json(
-      { error: "Internal Server Error" },
+      { error: "Internal server error." },
       { status: 500 },
     );
   }

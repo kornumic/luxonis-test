@@ -2,7 +2,7 @@
 
 import { ApartmentSelectModel } from "@/lib/db/schema";
 import ApartmentList from "@/components/ApartmentList";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import Header from "@/components/Header";
 import { useRouter } from "next/navigation";
@@ -19,27 +19,39 @@ function Home() {
   const router = useRouter();
 
   useEffect(() => {
+    const handleResponseStatus = (response: Response) => {
+      if (response.status >= 500 && response.status < 600) {
+        throw new Error("Internal server error: " + response.status);
+      }
+      if (response.status >= 400 && response.status < 500) {
+        throw new Error("Bad request." + response.status);
+      }
+    };
+
     const fetchData = async () => {
       setLoading(true);
       setError(null);
       try {
-        const init: InitStatus = await (
-          await fetch("/api/init-status", { method: "GET" })
-        ).json();
-        console.log(init);
+        const statusResponse = await fetch("/api/init-status", {
+          method: "GET",
+        });
+        handleResponseStatus(statusResponse);
+        const init: InitStatus = await statusResponse.json();
+
         const initState = init === "initializing";
-        console.log(initState);
         setInitializing(initState);
 
         const url = "/api/apartments?page=" + page;
         const response = await fetch(url, {
           method: "GET",
         });
+        handleResponseStatus(response);
+
         const data: ApartmentSelectModel[] = await response.json();
         setApartments(data);
-      } catch (error) {
-        console.log(error);
-        setError("Unexpected error");
+      } catch (error: any) {
+        console.log(error.message);
+        setError(error.message);
       } finally {
         setLoading(false);
         setInitializing(false);
@@ -47,7 +59,7 @@ function Home() {
     };
 
     fetchData();
-  }, [page, initializing]);
+  }, [page]);
 
   const pageButtonHandler = (move: number) => {
     const newPage = page + move;
@@ -63,7 +75,6 @@ function Home() {
       console.log(error);
       setError("Unexpected error");
     }
-    setInitializing(true);
     router.push("/");
   };
 

@@ -68,18 +68,19 @@ const webScrapper = async (
     throw new Error("Invalid quantity parameter.");
   }
 
-  console.log("Initializing web scrapper...");
-
-  const baseUrl: string =
-    "https://www.sreality.cz/en/search/for-sale/apartments?page=";
-  const browser = await getBrowser();
-  const page = await browser.newPage();
-  const maxPage = Math.ceil(quantity / 20);
   const all: ApartmentInsertModel[] = [];
 
-  console.log("Scraping data from sreality.cz...");
-
   try {
+    console.log("Initializing web scrapper...");
+
+    const baseUrl: string =
+      "https://www.sreality.cz/en/search/for-sale/apartments?page=";
+    const browser = await getBrowser();
+    const page = await browser.newPage();
+    const maxPage = Math.ceil(quantity / 20);
+
+    console.log("Scraping data from sreality.cz...");
+
     for (let currentPage = 1; currentPage <= maxPage; currentPage++) {
       const url = baseUrl + currentPage;
       await page.goto(url, {
