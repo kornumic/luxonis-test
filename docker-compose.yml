@@ -4,16 +4,19 @@ services:
   db:
     image: postgres:16-alpine
     restart: always
-    container_name: luxonis_test_db
+    container_name: db
     environment:
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=postgres
-      - POSTGRES_DB=luxonis
+      DB_HOST: host.docker.internal
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: luxonis
     ports:
       - '5432:5432'
     volumes:
       - .docker/postgres-data:/var/lib/postgresql/data
   web:
+    depends_on:
+      - db
     build:
       context: ./
       target: runner
@@ -24,4 +27,4 @@ services:
       - "8080:8080"
     environment:
       NODE_ENV: development
-        - DB_URL="postgresql://postgres:postgres@localhost:5432/luxonis"
+      DB_URL: postgresql://postgres:postgres@db:5432/luxonis
