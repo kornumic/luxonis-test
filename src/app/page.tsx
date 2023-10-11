@@ -15,7 +15,7 @@ function Home() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [apartments, setApartments] = useState<ApartmentSelectModel[]>([]);
-  const [page, setPage] = useState(+(useSearchParams().get("page") || "1"));
+  const page = +(useSearchParams().get("page") || "1");
   const router = useRouter();
 
   useEffect(() => {
@@ -64,6 +64,7 @@ function Home() {
       setError("Unexpected error");
     }
     setInitializing(true);
+    router.push("/");
   };
 
   const pages = {
@@ -73,8 +74,11 @@ function Home() {
 
   return (
     <div>
-      <Header />
-      <button onClick={onReinitializeHandler}>Reinitialize data</button>
+      <Header
+        onReinitializeHandler={onReinitializeHandler}
+        initializationState={initializing}
+      />
+
       {loading && !initializing && !error && (
         <LoadingState text={"Loading..."} />
       )}

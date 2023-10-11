@@ -1,11 +1,10 @@
 import React from "react";
 
-//TODO - fix styling
 const LoadingState: React.FC<{ text: string }> = ({ text }) => {
   return (
-    <div className="flex flex-row w-full h-full justify-center">
-      <h1 className="text-2xl text-center">{text}</h1>
-    </div>
+    <span className="flex flex-row justify-center w-full h-full">
+      <h1 className="text-2xl text-center p-6 align-middle">{text}</h1>
+    </span>
   );
 };
 

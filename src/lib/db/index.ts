@@ -50,10 +50,14 @@ export const initialize = async () => {
   if (count < 500) {
     const apartments = await webScrapper();
     try {
+      let success = 0;
       for (let apartment of apartments) {
         await insertApartment(apartment);
+        success++;
       }
-      console.log("Database has been initialized from scraped data");
+      console.log(
+        "Database has been initialized from scraped data, total: " + success,
+      );
     } catch (err) {
       console.log("Error inserting apartment:" + err);
     }
