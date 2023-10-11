@@ -3,6 +3,7 @@ import { migrate } from "drizzle-orm/postgres-js/migrator";
 import { Client } from "pg";
 import { ApartmentInsertModel, apartmentsTable } from "@/lib/db/schema";
 import webScrapper from "@/lib/web-scrapper";
+import { sql } from "drizzle-orm";
 
 const client = new Client(process.env.DB_URL!);
 
@@ -36,12 +37,15 @@ export const deleteApartments = async () => {
 
 /**
  * Returns the number of apartments in the database
- * Needs to be optimized, currently it loads all apartments into memory
  */
 export const getApartmentCount = async () => {
-  //TODO - find better way to get count
-  const apartments = await db.select().from(apartmentsTable).execute();
-  return apartments.length;
+  const apartments = (
+    await db
+      .select({ totalApartments: sql`COUNT(*)` })
+      .from(apartmentsTable)
+      .execute()
+  )[0];
+  return apartments.totalApartments as number;
 };
 
 export const initialize = async () => {
