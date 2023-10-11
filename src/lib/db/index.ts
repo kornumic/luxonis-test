@@ -30,7 +30,12 @@ export const getApartments = async (offset: number, limit: number) => {
     .execute();
 };
 
+/**
+ * Returns the number of apartments in the database
+ * Needs to be optimized, currently it loads all apartments into memory
+ */
 export const getApartmentCount = async () => {
+  //TODO - find better way to get count
   const apartments = await db.select().from(apartmentsTable).execute();
   return apartments.length;
 };
