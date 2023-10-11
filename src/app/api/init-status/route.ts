@@ -6,5 +6,5 @@ export const GET = async (request: NextRequest, res: NextResponse) => {
   const count = await getApartmentCount();
   const state: InitStatus = count < 500 ? "initializing" : "initialized";
 
-  return NextResponse.json({ status: state }, { status: 500 });
+  return NextResponse.json(state, { status: 200 });
 };

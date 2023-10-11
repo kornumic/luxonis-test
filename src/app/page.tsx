@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import Header from "@/components/Header";
 import { useRouter } from "next/navigation";
-import Loading from "@/components/Loading";
+import LoadingState from "@/components/LoadingState";
 
 export type InitStatus = "initializing" | "initialized";
 
@@ -15,7 +15,7 @@ function Home() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [apartments, setApartments] = useState<ApartmentSelectModel[]>([]);
-  const page = +(useSearchParams().get("page") || "1");
+  const [page, setPage] = useState(+(useSearchParams().get("page") || "1"));
   const router = useRouter();
 
   useEffect(() => {
@@ -26,7 +26,10 @@ function Home() {
         const init: InitStatus = await (
           await fetch("/api/init-status", { method: "GET" })
         ).json();
-        setInitializing(init === "initializing");
+        console.log(init);
+        const initState = init === "initializing";
+        console.log(initState);
+        setInitializing(initState);
 
         const url = "/api/apartments?page=" + page;
         const response = await fetch(url, {
@@ -44,13 +47,23 @@ function Home() {
     };
 
     fetchData();
-  }, [page]);
+  }, [page, initializing]);
 
   const pageButtonHandler = (move: number) => {
     const newPage = page + move;
     if (newPage > 0) {
       router.push("/?page=" + newPage);
     }
+  };
+
+  const onReinitializeHandler = async () => {
+    try {
+      await fetch("/api/reinitialize", { method: "POST" });
+    } catch (error) {
+      console.log(error);
+      setError("Unexpected error");
+    }
+    setInitializing(true);
   };
 
   const pages = {
@@ -61,11 +74,14 @@ function Home() {
   return (
     <div>
       <Header />
-      {loading && !initializing && !error && <Loading text={"Loading..."} />}
-      {loading && initializing && !error && (
-        <Loading text={"Initializing..."} />
+      <button onClick={onReinitializeHandler}>Reinitialize data</button>
+      {loading && !initializing && !error && (
+        <LoadingState text={"Loading..."} />
       )}
-      {error && <p>{error}</p>}
+      {loading && initializing && !error && (
+        <LoadingState text={"Initializing..."} />
+      )}
+      {error && <LoadingState text={error} />}
       {!loading && apartments.length > 0 && (
         <ApartmentList
           apartments={apartments}

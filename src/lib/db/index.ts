@@ -30,6 +30,10 @@ export const getApartments = async (offset: number, limit: number) => {
     .execute();
 };
 
+export const deleteApartments = async () => {
+  await db.delete(apartmentsTable);
+};
+
 /**
  * Returns the number of apartments in the database
  * Needs to be optimized, currently it loads all apartments into memory
