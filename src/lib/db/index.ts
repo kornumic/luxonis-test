@@ -35,9 +35,6 @@ export const deleteApartments = async () => {
   await db.delete(apartmentsTable);
 };
 
-/**
- * Returns the number of apartments in the database
- */
 export const getApartmentCount = async () => {
   const apartments = (
     await db
@@ -48,10 +45,13 @@ export const getApartmentCount = async () => {
   return apartments.totalApartments as number;
 };
 
+let initializationInProgress = false;
+
 export const initialize = async () => {
   const count = await getApartmentCount();
 
-  if (count < 500) {
+  if (count < 500 && !initializationInProgress) {
+    initializationInProgress = true;
     const apartments = await webScrapper();
     try {
       let success = 0;
@@ -64,6 +64,8 @@ export const initialize = async () => {
       );
     } catch (err) {
       console.log("Error inserting apartment:" + err);
+    } finally {
+      initializationInProgress = false;
     }
   }
   if (count > 500) {
