@@ -7,7 +7,7 @@ const getBrowser = async () => {
   if (!browser) {
     browser = await puppeteer.launch({
       headless: "new",
-      defaultViewport: null,
+      args: ["--no-sandbox", "--disable-dev-shm-usage"],
     });
     console.log("Browser initialized.");
   }
@@ -91,6 +91,8 @@ const webScrapper = async (
     }
     console.log("Successfully scraped " + all.length + " items.");
   } catch (err) {
+    console.log(err);
+    console.log("An error occurred while scraping data.");
     throw new Error("An error occurred while scraping data.");
   } finally {
     await closeBrowser();
