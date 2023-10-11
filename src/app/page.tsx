@@ -7,7 +7,8 @@ import { useSearchParams } from "next/navigation";
 import Header from "@/components/Header";
 import { useRouter } from "next/navigation";
 import Loading from "@/components/Loading";
-import { InitStatus } from "@/app/api/init-status/route";
+
+export type InitStatus = "initializing" | "initialized";
 
 function Home() {
   const [initializing, setInitializing] = useState(false);
@@ -22,11 +23,9 @@ function Home() {
       setLoading(true);
       setError(null);
       try {
-        const initializationStatus = await fetch("/api/init-status", {
-          method: "GET",
-        });
-        const init: InitStatus = await initializationStatus.json();
-        console.log(init);
+        const init: InitStatus = await (
+          await fetch("/api/init-status", { method: "GET" })
+        ).json();
         setInitializing(init === "initializing");
 
         const url = "/api/apartments?page=" + page;

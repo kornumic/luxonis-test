@@ -46,10 +46,10 @@ const scrapeData = async (page: Page): Promise<ApartmentInsertModel[]> => {
         const price = listItem.querySelector(".norm-price.ng-binding");
 
         return {
-          title: title?.innerText.toString(),
-          address: address?.textContent?.toString(),
-          price: price?.textContent?.toString(),
-          src: src?.getAttribute("src")?.toString(),
+          title: title?.innerText.toString() || "",
+          address: address?.textContent?.toString() || "",
+          price: price?.textContent?.toString() || "",
+          src: src?.getAttribute("src")?.toString() || "",
         };
       },
     );
@@ -102,27 +102,3 @@ const webScrapper = async (
 };
 
 export default webScrapper;
-
-// export async function fetch() : Promise<any>{
-//     log("fetch", "Starting scraping data...");
-//     try{
-//         const baseApi = "https://www.sreality.cz/api/en/v2/estates"
-//         const headers = {
-//             "Content-Type": "application/hal+json",
-//             "User-Agent": "PostmanRuntime/7.32.3",
-//         };
-//         const response = await axios.get(baseApi, {
-//             headers,
-//             params: {
-//                 category_main_cb: 1,
-//                 category_type_cb: 1,
-//                 per_page: 500
-//             },
-//             timeout: 5000
-//         })
-//         return response.data;
-//     }catch(error){
-//         log("fetch", Error fetching data: ${error});
-//         return {};
-//     }
-// }

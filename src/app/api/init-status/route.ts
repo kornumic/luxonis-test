@@ -1,13 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
-import { apartments } from "@/app/api/apartments/route";
-
-export type InitStatus = "uninitialized" | "initializing" | "ready";
-
-export const getInitStatus = async () => {
-  return apartments.length !== 500 ? "initializing" : "ready";
-};
+import { getApartmentCount } from "@/lib/db";
+import { InitStatus } from "@/app/page";
 
 export const GET = async (request: NextRequest, res: NextResponse) => {
-  const initializationStatus = await getInitStatus();
-  return NextResponse.json(initializationStatus, { status: 200 });
+  const count = await getApartmentCount();
+  const state: InitStatus = count < 500 ? "initializing" : "initialized";
+
+  return NextResponse.json({ status: state }, { status: 500 });
 };
