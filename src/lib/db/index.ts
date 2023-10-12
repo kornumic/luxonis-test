@@ -22,7 +22,7 @@ await migrate(db, {
 });
 
 export const insertApartment = async (apartment: ApartmentInsertModel) => {
-  console.log("Inserting apartment:" + JSON.stringify(apartment));
+  // console.log("Inserting apartment:" + JSON.stringify(apartment));
   await db.insert(apartmentsTable).values(apartment).execute();
 };
 
@@ -52,7 +52,7 @@ export const getApartmentCount = async () => {
 let initializationInProgress = false;
 
 export const initialize = async () => {
-  const count = await getApartmentCount();
+  let count = await getApartmentCount();
 
   if (count < 500 && !initializationInProgress) {
     initializationInProgress = true;
@@ -72,6 +72,7 @@ export const initialize = async () => {
       initializationInProgress = false;
     }
   }
+  count = await getApartmentCount();
   if (count > 500) {
     console.log("Number of apartments in database is invalid: " + count);
   }
