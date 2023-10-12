@@ -4,7 +4,7 @@ WORKDIR /app
 
 COPY . .
 
-RUN npm i
+RUN npm install
 RUN npm run build
 
 FROM node:lts as RUNNER
