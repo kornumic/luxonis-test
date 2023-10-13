@@ -12,13 +12,15 @@ try {
   console.log("Connected to database");
 } catch (e) {
   console.log(e);
+  throw new Error("Internal Server Error");
 }
-
 const db = drizzle(client);
+
 await migrate(db, {
   migrationsFolder: "./src/lib/db/migrations",
 }).catch((error) => {
   console.log(`Error migrating database: ${error}`);
+  throw new Error("Internal Server Error");
 });
 
 export const insertApartment = async (apartment: ApartmentInsertModel) => {
@@ -74,7 +76,9 @@ export const initialize = async () => {
   }
   count = await getApartmentCount();
   if (count > 500) {
-    console.log("Number of apartments in database is invalid: " + count);
+    console.log(
+      "WARNING: Number of apartments in database is invalid: " + count,
+    );
   }
 };
 
