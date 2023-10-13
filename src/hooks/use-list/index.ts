@@ -1,6 +1,6 @@
 import { ApartmentSelectModel } from "@/lib/db/schema";
 import { InitStatus } from "@/app/page";
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 
 const useApartmentsList = () => {
@@ -9,7 +9,13 @@ const useApartmentsList = () => {
   const [error, setError] = useState<string | null>(null);
   const [apartments, setApartments] = useState<ApartmentSelectModel[]>([]);
   const router = useRouter();
+
   const page = +(useSearchParams().get("page") || "1");
+  const pages = {
+    current: page,
+    prev: page > 1,
+    next: page < 500 / 20,
+  };
 
   const handleResponseStatus = (response: Response) => {
     if (response.status >= 500 && response.status < 600) {
@@ -27,7 +33,7 @@ const useApartmentsList = () => {
     }
   };
 
-  const fetchData = async () => {
+  const fetchData = useCallback(async () => {
     setLoading(true);
     setError(null);
     try {
@@ -55,7 +61,7 @@ const useApartmentsList = () => {
       setLoading(false);
       setInitializing(false);
     }
-  };
+  }, [page]);
 
   const onReinitializeHandler = async () => {
     try {
@@ -73,6 +79,7 @@ const useApartmentsList = () => {
     loading,
     error,
     apartments,
+    pages,
     fetchData,
     onReinitializeHandler,
     pageButtonHandler,

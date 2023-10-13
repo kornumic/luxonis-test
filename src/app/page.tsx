@@ -2,7 +2,6 @@
 
 import ApartmentList from "@/components/ApartmentList";
 import React, { useEffect } from "react";
-import { useSearchParams } from "next/navigation";
 import Header from "@/components/Header";
 import LoadingState from "@/components/LoadingState";
 import useApartmentsList from "@/hooks/use-list";
@@ -15,20 +14,15 @@ function Home() {
     loading,
     error,
     apartments,
+    pages,
     fetchData,
     onReinitializeHandler,
     pageButtonHandler,
   } = useApartmentsList();
-  const page = +(useSearchParams().get("page") || "1");
 
   useEffect(() => {
-    fetchData();
-  }, [page]);
-
-  const pages = {
-    prev: page > 1,
-    next: page < 500 / 20,
-  };
+    fetchData().then();
+  }, [fetchData]);
 
   return (
     <div>
@@ -36,7 +30,6 @@ function Home() {
         onReinitializeHandler={onReinitializeHandler}
         initializationState={initializing}
       />
-
       {loading && !initializing && !error && (
         <LoadingState text={"Loading..."} />
       )}

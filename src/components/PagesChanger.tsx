@@ -1,6 +1,7 @@
 import React from "react";
 
 export type PageList = {
+  current: number;
   prev: boolean;
   next: boolean;
 };
