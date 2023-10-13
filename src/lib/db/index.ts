@@ -17,8 +17,8 @@ try {
 const db = drizzle(client);
 await migrate(db, {
   migrationsFolder: "./src/lib/db/migrations",
-}).catch((e) => {
-  console.log(`Error migrating database: ${e}`);
+}).catch((error) => {
+  console.log(`Error migrating database: ${error}`);
 });
 
 export const insertApartment = async (apartment: ApartmentInsertModel) => {

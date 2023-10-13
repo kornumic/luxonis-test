@@ -1,27 +1,24 @@
-FROM node:lts AS BUILDER
+# Use an official Node.js runtime as the base image
+FROM node:alpine
 
+# Set the working directory in the container
 WORKDIR /app
 
+# Copy package.json and package-lock.json to the container
+COPY package*.json ./
+
+# Copy the rest of your application code to the container
 COPY . .
 
+# Install project dependencies
 RUN npm install
+
+# Build the Next.js application
 RUN npm run build
 
-FROM node:lts as RUNNER
-
-WORKDIR /app
-
-COPY --from=BUILDER /app/next.config.js .
-COPY --from=BUILDER /app/package.json .
-COPY --from=BUILDER /app/public ./public
-COPY --from=BUILDER /app/.next ./.next
-
-ENV NODE_ENV=PRODUCTION
-
+# Expose the port that your Next.js app will run on (usually 3000)
 EXPOSE 3000
 
-RUN npm install --production
-
-HEALTHCHECK --interval=30s --timeout=30s --start-period=5s --retries=3 CMD curl -f http://localhost:3000
-
-CMD npm run start
+# Define the command to start your Next.js application
+CMD ["npm", "start"]
+#CMD ["sleep","infinity"]
