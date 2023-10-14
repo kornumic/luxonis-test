@@ -6,6 +6,7 @@ import webScrapper from "@/lib/web-scrapper";
 import { sql } from "drizzle-orm";
 
 let db: NodePgDatabase | undefined = undefined;
+let initializationInProgress = false;
 
 export const getDb = async () => {
   if (db) {
@@ -46,6 +47,9 @@ export const getApartments = async (offset: number, limit: number) => {
 };
 
 export const deleteApartments = async () => {
+  if (initializationInProgress) {
+    return;
+  }
   const db = await getDb();
   await db.delete(apartmentsTable);
 };
@@ -60,8 +64,6 @@ export const getApartmentCount = async () => {
   )[0];
   return apartments.totalApartments as number;
 };
-
-let initializationInProgress = false;
 
 export const initialize = async () => {
   let count = await getApartmentCount();

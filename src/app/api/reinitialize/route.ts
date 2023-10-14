@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { deleteApartments, getApartmentCount } from "@/lib/db";
-import { InitStatus } from "@/app/page";
+import { deleteApartments } from "@/lib/db";
 
 export const POST = async (request: NextRequest, res: NextResponse) => {
   await deleteApartments();
@@ -8,4 +7,4 @@ export const POST = async (request: NextRequest, res: NextResponse) => {
   return NextResponse.json({ status: 204 });
 };
 
-export const dynamic = 'force-dynamic';
+export const dynamic = "force-dynamic";

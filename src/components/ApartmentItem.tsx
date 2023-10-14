@@ -1,4 +1,3 @@
-import Image from "next/image";
 import { ApartmentSelectModel } from "@/lib/db/schema";
 
 const ApartmentItem: React.FC<{ apartment: ApartmentSelectModel }> = ({

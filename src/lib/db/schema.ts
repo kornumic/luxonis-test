@@ -1,4 +1,4 @@
-import { serial, text, pgTable, pgSchema } from "drizzle-orm/pg-core";
+import { serial, text, pgSchema } from "drizzle-orm/pg-core";
 import { InferInsertModel, InferSelectModel } from "drizzle-orm";
 
 export const apartmentSchema = pgSchema("apartment_schema");
