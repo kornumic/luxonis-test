@@ -43,8 +43,10 @@ const useApartmentsList = () => {
       handleResponseStatus(statusResponse);
       const init: InitStatus = await statusResponse.json();
 
-      const initState = init === "initializing";
-      setInitializing(initState);
+      if (init === "initializing") {
+        setInitializing(true);
+        setLoading(false);
+      }
 
       const url = "/api/apartments?page=" + page;
       const response = await fetch(url, {
@@ -70,8 +72,8 @@ const useApartmentsList = () => {
       console.log(error);
       setError("Unexpected error");
     }
-    router.push("/");
     fetchData().then();
+    router.push("/");
   };
 
   return {

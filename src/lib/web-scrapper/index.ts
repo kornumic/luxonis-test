@@ -1,30 +1,6 @@
 import { ApartmentInsertModel } from "@/lib/db/schema";
 import axios from "axios";
 
-const transform = (rawData: any): ApartmentInsertModel[] => {
-  const estates = rawData._embedded.estates;
-  return estates.map((estate: any): ApartmentInsertModel => {
-    const title = estate.name || "Estate";
-    const address = estate.locality || "Address not provided";
-    const price_raw = estate.price
-      ? estate.price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ")
-      : "1";
-    const price =
-      price_raw !== "1"
-        ? "Total price: " + price_raw + " CZK"
-        : "Information about price at agency";
-    const images = estate._links.images;
-    const src = images[0].href;
-
-    return {
-      title,
-      address,
-      price,
-      src,
-    };
-  });
-};
-
 const scrape = async (quantity: number = 500): Promise<any> => {
   try {
     const response = await axios.get(
@@ -48,11 +24,40 @@ const scrape = async (quantity: number = 500): Promise<any> => {
   }
 };
 
+const transform = (rawData: any): ApartmentInsertModel[] => {
+  const estates = rawData._embedded.estates;
+  const transformed = estates.map((estate: any): ApartmentInsertModel => {
+    const title = estate.name || "Estate";
+    const address = estate.locality || "Address not provided";
+    const price_raw = estate.price
+      ? estate.price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ")
+      : "1";
+    const price =
+      price_raw !== "1"
+        ? "Total price: " + price_raw + " CZK"
+        : "Information about price at agency";
+    const images = estate._links.images;
+    const src = images[0].href;
+
+    return {
+      title,
+      address,
+      price,
+      src,
+    };
+  });
+  console.log(
+    "Transformed " + transformed.length + " apartments from raw data.",
+  );
+  return transformed;
+};
+
 const webScrapper = async (
   quantity: number = 500,
 ): Promise<ApartmentInsertModel[]> => {
   let transformedApartments: ApartmentInsertModel[] = [];
   try {
+    console.log("Scraping data from sreality.cz ...");
     const rawData = await scrape();
     transformedApartments = transform(rawData).slice(0, quantity);
   } catch (error) {

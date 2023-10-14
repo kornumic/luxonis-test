@@ -30,14 +30,14 @@ function Home() {
         onReinitializeHandler={onReinitializeHandler}
         initializationState={initializing}
       />
+      {error && <LoadingState text={error} />}
       {loading && !initializing && !error && (
         <LoadingState text={"Loading..."} />
       )}
-      {loading && initializing && !error && (
+      {!loading && initializing && !error && (
         <LoadingState text={"Initializing..."} />
       )}
-      {error && <LoadingState text={error} />}
-      {!loading && apartments.length > 0 && (
+      {!loading && !initializing && !error && apartments.length > 0 && (
         <ApartmentList
           apartments={apartments}
           pageButtonHandler={pageButtonHandler}
