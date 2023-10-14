@@ -1,4 +1,5 @@
 import React from "react";
+import Link from "next/link";
 
 const Header: React.FC<{
   onReinitializeHandler: () => Promise<void>;
@@ -6,7 +7,9 @@ const Header: React.FC<{
 }> = ({ onReinitializeHandler, initializationState }) => {
   return (
     <header className="flex flex-row justify-between w-full bg-[#181818] ">
-      <h1 className="text-4xl p-6">SReality scraper</h1>
+      <Link href="/">
+        <h1 className="text-4xl p-6">SReality scraper</h1>
+      </Link>
       <div className="p-6">
         <button
           onClick={onReinitializeHandler}

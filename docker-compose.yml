@@ -13,6 +13,14 @@ services:
       - '5432:5432'
     volumes:
       - .docker/postgres-data:/var/lib/postgresql/data
+  adminer:
+    image: adminer
+    restart: always
+    depends_on:
+      - db
+    container_name: adminer
+    ports:
+      - '8081:8080'
   app:
     container_name: app
     build:

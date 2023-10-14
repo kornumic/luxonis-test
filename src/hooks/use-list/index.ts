@@ -22,7 +22,7 @@ const useApartmentsList = () => {
       throw new Error("Internal server error: " + response.status);
     }
     if (response.status >= 400 && response.status < 500) {
-      throw new Error("Bad request." + response.status);
+      throw new Error("Bad request: " + response.status);
     }
   };
 
@@ -73,7 +73,6 @@ const useApartmentsList = () => {
       console.log(error);
       setError("Unexpected error");
     }
-    router.push("/");
     fetchData().then();
   };
 
