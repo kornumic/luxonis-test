@@ -34,6 +34,7 @@ const useApartmentsList = () => {
   };
 
   const fetchData = useCallback(async () => {
+    setInitializing(false);
     setLoading(true);
     setError(null);
     try {
@@ -72,8 +73,8 @@ const useApartmentsList = () => {
       console.log(error);
       setError("Unexpected error");
     }
-    fetchData().then();
     router.push("/");
+    fetchData().then();
   };
 
   return {
