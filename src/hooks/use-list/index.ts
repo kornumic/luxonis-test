@@ -34,7 +34,7 @@ const useApartmentsList = () => {
   };
 
   const onPrevPage = () => {
-    const newPage = page + 1;
+    const newPage = page - 1;
     if (newPage > 0) {
       router.push("/?page=" + newPage);
     }
