@@ -54,25 +54,26 @@ export const deleteApartments = async () => {
   await db.delete(apartmentsTable);
 };
 
-export const getApartmentCount = async () => {
+export const getApartmentCount = async (): Promise<number> => {
   const db = await getDb();
   const apartments = (
     await db
-      .select({ totalApartments: sql`COUNT(*)` })
+      .select({ totalApartments: sql<number>`COUNT(*)` })
       .from(apartmentsTable)
       .execute()
   )[0];
-  return apartments.totalApartments as number;
+  return +apartments.totalApartments;
 };
 
 export const initialize = async () => {
-  let count = await getApartmentCount();
+  let count: number = await getApartmentCount();
 
   if (count < 500 && !initializationInProgress) {
     await deleteApartments();
     console.log("Initializing database.");
     initializationInProgress = true;
     const apartments = await webScrapper();
+
     try {
       let success = 0;
       console.log("Saving apartments to database...");
@@ -91,12 +92,8 @@ export const initialize = async () => {
       count = await getApartmentCount();
     }
   }
-  // console.log(count, !initializationInProgress);
-  // console.log(count !== 500);
-  // console.log(count.toString() !== "500");
-  // console.log(!initializationInProgress);
-  // console.log(count.toString() !== "500" && !initializationInProgress);
-  if (count.toString() !== "500" && !initializationInProgress) {
+
+  if (count !== 500 && !initializationInProgress) {
     console.log(
       "WARNING: Number of apartments in database is invalid: " + count,
     );

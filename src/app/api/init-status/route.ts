@@ -9,4 +9,4 @@ export const GET = async (request: NextRequest, res: NextResponse) => {
   return NextResponse.json(state, { status: 200 });
 };
 
-export const dynamic = 'force-dynamic';
+export const dynamic = "force-dynamic";

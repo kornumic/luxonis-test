@@ -5,15 +5,16 @@ import { ApartmentSelectModel } from "@/lib/db/schema";
 
 const ApartmentList: React.FC<{
   apartments: ApartmentSelectModel[];
-  pageButtonHandler: (move: number) => void;
+  onNextPage: () => void;
+  onPrevPage: () => void;
   pages: PageList;
-}> = ({ apartments, pageButtonHandler, pages }) => {
+}> = ({ apartments, onNextPage, onPrevPage, pages }) => {
   return (
     <div className=" md:mx-32 lg:mx-72">
       <PagesChanger
         pages={pages}
-        prevButtonHandler={pageButtonHandler.bind(null, -1)}
-        nextButtonHandler={pageButtonHandler.bind(null, 1)}
+        onPrevPage={onPrevPage}
+        onNextPage={onNextPage}
       />
       <ul className="flex flex-col justify-between">
         {apartments.map((item) => {
@@ -22,8 +23,8 @@ const ApartmentList: React.FC<{
       </ul>
       <PagesChanger
         pages={pages}
-        prevButtonHandler={pageButtonHandler.bind(null, -1)}
-        nextButtonHandler={pageButtonHandler.bind(null, 1)}
+        onPrevPage={onPrevPage}
+        onNextPage={onNextPage}
       />
     </div>
   );

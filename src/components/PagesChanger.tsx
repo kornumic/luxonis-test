@@ -8,16 +8,16 @@ export type PageList = {
 
 const PagesChanger: React.FC<{
   pages: PageList;
-  prevButtonHandler: () => void;
-  nextButtonHandler: () => void;
-}> = ({ pages, prevButtonHandler, nextButtonHandler }) => {
+  onNextPage: () => void;
+  onPrevPage: () => void;
+}> = ({ pages, onNextPage, onPrevPage }) => {
   return (
     <div className="flex flex-row justify-between row-end-2 p-4">
       <div>
         {pages.prev && (
           <button
             className="flex uppercase w-32 h-12 text-xl justify-center items-center rounded-2xl bg-[#181818] transition-all hover:bg-[#303030]"
-            onClick={prevButtonHandler}
+            onClick={onPrevPage}
           >
             Previous
           </button>
@@ -27,7 +27,7 @@ const PagesChanger: React.FC<{
         {pages.next && (
           <button
             className="flex uppercase w-32 h-12 text-xl justify-center items-center rounded-2xl bg-[#181818] transition-all hover:bg-[#303030]"
-            onClick={nextButtonHandler}
+            onClick={onNextPage}
           >
             Next
           </button>

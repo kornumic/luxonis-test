@@ -16,8 +16,9 @@ function Home() {
     apartments,
     pages,
     fetchData,
-    onReinitializeHandler,
-    pageButtonHandler,
+    onReinitialize,
+    onNextPage,
+    onPrevPage,
   } = useApartmentsList();
 
   useEffect(() => {
@@ -27,7 +28,7 @@ function Home() {
   return (
     <div>
       <Header
-        onReinitializeHandler={onReinitializeHandler}
+        onReinitialize={onReinitialize}
         initializationState={initializing}
       />
       {error && <LoadingState text={error} />}
@@ -40,7 +41,8 @@ function Home() {
       {!loading && !initializing && !error && apartments.length > 0 && (
         <ApartmentList
           apartments={apartments}
-          pageButtonHandler={pageButtonHandler}
+          onNextPage={onNextPage}
+          onPrevPage={onPrevPage}
           pages={pages}
         />
       )}

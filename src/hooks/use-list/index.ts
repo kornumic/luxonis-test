@@ -26,8 +26,15 @@ const useApartmentsList = () => {
     }
   };
 
-  const pageButtonHandler = (move: number) => {
-    const newPage = page + move;
+  const onNextPage = () => {
+    const newPage = page + 1;
+    if (newPage > 0) {
+      router.push("/?page=" + newPage);
+    }
+  };
+
+  const onPrevPage = () => {
+    const newPage = page + 1;
     if (newPage > 0) {
       router.push("/?page=" + newPage);
     }
@@ -66,14 +73,14 @@ const useApartmentsList = () => {
     }
   }, [page]);
 
-  const onReinitializeHandler = async () => {
+  const onReinitialize = async () => {
     try {
       await fetch("/api/reinitialize", { method: "POST" });
     } catch (error) {
       console.log(error);
       setError("Unexpected error");
     }
-    fetchData().then();
+    await fetchData();
   };
 
   return {
@@ -83,8 +90,9 @@ const useApartmentsList = () => {
     apartments,
     pages,
     fetchData,
-    onReinitializeHandler,
-    pageButtonHandler,
+    onReinitialize,
+    onNextPage,
+    onPrevPage,
   };
 };
 
